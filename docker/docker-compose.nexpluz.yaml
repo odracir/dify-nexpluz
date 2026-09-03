@@ -245,6 +245,8 @@ services:
       REDIS_USE_SSL: "false"
 
       VECTOR_STORE: pgvector
+
+      SANDBOX_API_KEY: '${NEXPLUZ_SANDBOX_API_KEY}'
       
       SENTRY_DSN: ${API_SENTRY_DSN:-}
       SENTRY_TRACES_SAMPLE_RATE: ${API_SENTRY_TRACES_SAMPLE_RATE:-1.0}
@@ -356,6 +358,8 @@ services:
       REDIS_USE_SSL: "false"
 
       VECTOR_STORE: pgvector
+
+      SANDBOX_API_KEY: '${NEXPLUZ_SANDBOX_API_KEY}'
       
       SENTRY_DSN: ${API_SENTRY_DSN:-}
       SENTRY_TRACES_SAMPLE_RATE: ${API_SENTRY_TRACES_SAMPLE_RATE:-1.0}
@@ -618,7 +622,7 @@ services:
       - path: ./envs/core-services/local-sandbox.env
         required: false
     environment:
-      - SHELLCTL_AUTH_TOKEN=${DIFY_AGENT_LOCAL_SANDBOX_AUTH_TOKEN:-${DIFY_AGENT_SHELLCTL_AUTH_TOKEN:-}}
+      - SHELLCTL_AUTH_TOKEN=${NEXPLUZ_LOCAL_SANDBOX_AUTH_TOKEN}
       - HTTP_PROXY=http://agent_ssrf_proxy:3128
       - HTTPS_PROXY=http://agent_ssrf_proxy:3128
       - NO_PROXY=localhost,127.0.0.1
@@ -757,7 +761,7 @@ services:
       DIFY_AGENT_INNER_API_KEY: '${NEXPLUZ_PLUGIN_INNER_API_KEY}'
       DIFY_AGENT_RUNTIME_BACKEND: ${DIFY_AGENT_RUNTIME_BACKEND:-local}
       DIFY_AGENT_LOCAL_SANDBOX_ENDPOINT: ${DIFY_AGENT_LOCAL_SANDBOX_ENDPOINT:-${DIFY_AGENT_SHELLCTL_ENTRYPOINT:-http://local_sandbox:5004}}
-      DIFY_AGENT_LOCAL_SANDBOX_AUTH_TOKEN: ${DIFY_AGENT_LOCAL_SANDBOX_AUTH_TOKEN:-${DIFY_AGENT_SHELLCTL_AUTH_TOKEN:-}}
+      DIFY_AGENT_LOCAL_SANDBOX_AUTH_TOKEN: '${NEXPLUZ_LOCAL_SANDBOX_AUTH_TOKEN}'
       DIFY_AGENT_STUB_API_BASE_URL: ${DIFY_AGENT_STUB_API_BASE_URL:-http://agent_backend:5050/agent-stub}
       DIFY_AGENT_SANDBOX_FILES_BASE_URL: ${DIFY_AGENT_SANDBOX_FILES_BASE_URL:-http://api:5001}
       # This is security-sensitive: it derives the JWE encryption key for Agent Stub bearer tokens.
