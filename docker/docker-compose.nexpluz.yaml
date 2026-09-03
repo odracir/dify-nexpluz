@@ -229,6 +229,23 @@ services:
     image: langgenius/dify-api:1.17.0
     environment:
       MODE: api
+
+      DB_TYPE: postgresql
+      DB_HOST: ${DIFY_DB_HOST}
+      DB_PORT: "5432"
+      DB_USERNAME: dify_user
+      DB_PASSWORD: ${DIFY_DB_PASSWORD}
+      DB_DATABASE: dify
+
+      REDIS_HOST: ${DIFY_REDIS_HOST}
+      REDIS_PORT: "6379"
+      REDIS_USERNAME: default
+      REDIS_PASSWORD: ${DIFY_REDIS_PASSWORD}
+      REDIS_DB: "0"
+      REDIS_USE_SSL: "false"
+
+      VECTOR_STORE: pgvector
+      
       SENTRY_DSN: ${API_SENTRY_DSN:-}
       SENTRY_TRACES_SAMPLE_RATE: ${API_SENTRY_TRACES_SAMPLE_RATE:-1.0}
       SENTRY_PROFILES_SAMPLE_RATE: ${API_SENTRY_PROFILES_SAMPLE_RATE:-1.0}
@@ -254,8 +271,6 @@ services:
       seekdb:
         condition: service_healthy
         required: false
-      redis:
-        condition: service_started
       agent_backend:
         condition: service_started
     volumes:
@@ -279,6 +294,23 @@ services:
       - collaboration
     environment:
       MODE: api
+
+      DB_TYPE: postgresql
+      DB_HOST: ${DIFY_DB_HOST}
+      DB_PORT: "5432"
+      DB_USERNAME: dify_user
+      DB_PASSWORD: ${DIFY_DB_PASSWORD}
+      DB_DATABASE: dify
+
+      REDIS_HOST: ${DIFY_REDIS_HOST}
+      REDIS_PORT: "6379"
+      REDIS_USERNAME: default
+      REDIS_PASSWORD: ${DIFY_REDIS_PASSWORD}
+      REDIS_DB: "0"
+      REDIS_USE_SSL: "false"
+
+      VECTOR_STORE: pgvector
+      
       SERVER_WORKER_AMOUNT: ${API_WEBSOCKET_WORKER_AMOUNT:-1}
       SERVER_WORKER_CLASS: ${API_WEBSOCKET_WORKER_CLASS:-geventwebsocket.gunicorn.workers.GeventWebSocketWorker}
       SERVER_WORKER_CONNECTIONS: ${API_WEBSOCKET_WORKER_CONNECTIONS:-1000}
@@ -292,8 +324,6 @@ services:
       db_mysql:
         condition: service_healthy
         required: false
-      redis:
-        condition: service_started
     volumes:
       # Mount the storage directory to the container, for storing user files.
       - ./volumes/app/storage:/app/api/storage
@@ -308,6 +338,23 @@ services:
     image: langgenius/dify-api:1.17.0
     environment:
       MODE: worker
+
+      DB_TYPE: postgresql
+      DB_HOST: ${DIFY_DB_HOST}
+      DB_PORT: "5432"
+      DB_USERNAME: dify_user
+      DB_PASSWORD: ${DIFY_DB_PASSWORD}
+      DB_DATABASE: dify
+
+      REDIS_HOST: ${DIFY_REDIS_HOST}
+      REDIS_PORT: "6379"
+      REDIS_USERNAME: default
+      REDIS_PASSWORD: ${DIFY_REDIS_PASSWORD}
+      REDIS_DB: "0"
+      REDIS_USE_SSL: "false"
+
+      VECTOR_STORE: pgvector
+      
       SENTRY_DSN: ${API_SENTRY_DSN:-}
       SENTRY_TRACES_SAMPLE_RATE: ${API_SENTRY_TRACES_SAMPLE_RATE:-1.0}
       SENTRY_PROFILES_SAMPLE_RATE: ${API_SENTRY_PROFILES_SAMPLE_RATE:-1.0}
@@ -330,8 +377,6 @@ services:
       seekdb:
         condition: service_healthy
         required: false
-      redis:
-        condition: service_started
       agent_backend:
         condition: service_started
     volumes:
@@ -355,6 +400,23 @@ services:
     image: langgenius/dify-api:1.17.0
     environment:
       MODE: beat
+
+      DB_TYPE: postgresql
+      DB_HOST: ${DIFY_DB_HOST}
+      DB_PORT: "5432"
+      DB_USERNAME: dify_user
+      DB_PASSWORD: ${DIFY_DB_PASSWORD}
+      DB_DATABASE: dify
+
+      REDIS_HOST: ${DIFY_REDIS_HOST}
+      REDIS_PORT: "6379"
+      REDIS_USERNAME: default
+      REDIS_PASSWORD: ${DIFY_REDIS_PASSWORD}
+      REDIS_DB: "0"
+      REDIS_USE_SSL: "false"
+
+      VECTOR_STORE: pgvector
+      
     depends_on:
       init_permissions:
         condition: service_completed_successfully
@@ -370,8 +432,6 @@ services:
       seekdb:
         condition: service_healthy
         required: false
-      redis:
-        condition: service_started
     healthcheck:
       test: ["CMD-SHELL", "celery -A celery_healthcheck.celery inspect ping"]
       interval: ${COMPOSE_WORKER_HEALTHCHECK_INTERVAL:-30s}
@@ -490,6 +550,8 @@ services:
 
   # The redis cache.
   redis:
+    profiles:
+      - internal-redis
     image: redis:6-alpine
     restart: always
     environment:
@@ -591,7 +653,20 @@ services:
       - ssrf_proxy_network
       - default
     environment:
-      DB_DATABASE: ${DB_PLUGIN_DATABASE:-dify_plugin}
+      DB_TYPE: postgresql
+      DB_HOST: ${DIFY_DB_HOST}
+      DB_PORT: "5432"
+      DB_USERNAME: dify_user
+      DB_PASSWORD: ${DIFY_DB_PASSWORD}
+      DB_DATABASE: dify_plugin
+
+      REDIS_HOST: ${DIFY_REDIS_HOST}
+      REDIS_PORT: "6379"
+      REDIS_USERNAME: default
+      REDIS_PASSWORD: ${DIFY_REDIS_PASSWORD}
+      REDIS_DB: "0"
+      REDIS_USE_SSL: "false"
+      
       DB_SSL_MODE: ${DB_SSL_MODE:-disable}
       SERVER_PORT: ${PLUGIN_DAEMON_PORT:-5002}
       SERVER_KEY: ${PLUGIN_DAEMON_KEY:-lYkiYYT6owG+71oLerGzA7GXCgOT++6ovaezWAjpCjf+Sjc3ZtU+qUEi}
@@ -685,8 +760,6 @@ services:
       DIFY_AGENT_SERVER_SECRET_KEY: ${DIFY_AGENT_SERVER_SECRET_KEY:-MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY}
       DIFY_AGENT_API_TOKEN: ${DIFY_AGENT_API_TOKEN:-dify-agent-run-token-for-dev-only}
     depends_on:
-      redis:
-        condition: service_started
       plugin_daemon:
         condition: service_started
     networks:
