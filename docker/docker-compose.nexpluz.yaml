@@ -253,9 +253,9 @@ services:
       PLUGIN_REMOTE_INSTALL_PORT: ${EXPOSE_PLUGIN_DEBUGGING_PORT:-5003}
       PLUGIN_MAX_PACKAGE_SIZE: ${PLUGIN_MAX_PACKAGE_SIZE:-52428800}
       PLUGIN_DAEMON_TIMEOUT: ${PLUGIN_DAEMON_TIMEOUT:-600.0}
-      INNER_API_KEY_FOR_PLUGIN: ${PLUGIN_DIFY_INNER_API_KEY:-QaHbTe77CtuXmsfyhR7+vRjI/+XbV1AaFy691iy+kGDv2Jvy0/eAh8Y1}
+      INNER_API_KEY_FOR_PLUGIN: '${NEXPLUZ_PLUGIN_INNER_API_KEY}'
       AGENT_BACKEND_BASE_URL: ${AGENT_BACKEND_BASE_URL:-http://agent_backend:5050}
-      AGENT_BACKEND_API_TOKEN: ${DIFY_AGENT_API_TOKEN:-dify-agent-run-token-for-dev-only}
+      AGENT_BACKEND_API_TOKEN: '${NEXPLUZ_AGENT_API_TOKEN}'
     depends_on:
       init_permissions:
         condition: service_completed_successfully
@@ -285,6 +285,7 @@ services:
     networks:
       - ssrf_proxy_network
       - default
+      - coolify
 
   # WebSocket service for workflow collaboration.
   api_websocket:
@@ -330,6 +331,7 @@ services:
     networks:
       - ssrf_proxy_network
       - default
+      - coolify
 
   # worker service
   # The Celery worker for processing all queues (dataset, workflow, mail, etc.)
@@ -359,9 +361,9 @@ services:
       SENTRY_TRACES_SAMPLE_RATE: ${API_SENTRY_TRACES_SAMPLE_RATE:-1.0}
       SENTRY_PROFILES_SAMPLE_RATE: ${API_SENTRY_PROFILES_SAMPLE_RATE:-1.0}
       PLUGIN_MAX_PACKAGE_SIZE: ${PLUGIN_MAX_PACKAGE_SIZE:-52428800}
-      INNER_API_KEY_FOR_PLUGIN: ${PLUGIN_DIFY_INNER_API_KEY:-QaHbTe77CtuXmsfyhR7+vRjI/+XbV1AaFy691iy+kGDv2Jvy0/eAh8Y1}
+      INNER_API_KEY_FOR_PLUGIN: '${NEXPLUZ_PLUGIN_INNER_API_KEY}'
       AGENT_BACKEND_BASE_URL: ${AGENT_BACKEND_BASE_URL:-http://agent_backend:5050}
-      AGENT_BACKEND_API_TOKEN: ${DIFY_AGENT_API_TOKEN:-dify-agent-run-token-for-dev-only}
+      AGENT_BACKEND_API_TOKEN: '${NEXPLUZ_AGENT_API_TOKEN}'
     depends_on:
       init_permissions:
         condition: service_completed_successfully
@@ -392,6 +394,7 @@ services:
     networks:
       - ssrf_proxy_network
       - default
+      - coolify
 
   # worker_beat service
   # Celery beat for scheduling periodic tasks.
@@ -442,6 +445,7 @@ services:
     networks:
       - ssrf_proxy_network
       - default
+      - coolify
 
   # Frontend web application.
   web:
@@ -582,7 +586,7 @@ services:
       # The DifySandbox configurations
       # Make sure you are changing this key for your deployment with a strong key.
       # You can generate a strong key using `openssl rand -base64 42`.
-      API_KEY: ${SANDBOX_API_KEY:-dify-sandbox}
+      API_KEY: '${NEXPLUZ_SANDBOX_API_KEY}'
       GIN_MODE: ${SANDBOX_GIN_MODE:-release}
       WORKER_TIMEOUT: ${SANDBOX_WORKER_TIMEOUT:-15}
       ENABLE_NETWORK: ${SANDBOX_ENABLE_NETWORK:-true}
@@ -652,6 +656,7 @@ services:
     networks:
       - ssrf_proxy_network
       - default
+      - coolify
     environment:
       DB_TYPE: postgresql
       DB_HOST: ${DIFY_DB_HOST}
@@ -669,11 +674,11 @@ services:
       
       DB_SSL_MODE: ${DB_SSL_MODE:-disable}
       SERVER_PORT: ${PLUGIN_DAEMON_PORT:-5002}
-      SERVER_KEY: ${PLUGIN_DAEMON_KEY:-lYkiYYT6owG+71oLerGzA7GXCgOT++6ovaezWAjpCjf+Sjc3ZtU+qUEi}
+      SERVER_KEY: '${NEXPLUZ_PLUGIN_DAEMON_KEY}'
       MAX_PLUGIN_PACKAGE_SIZE: ${PLUGIN_MAX_PACKAGE_SIZE:-52428800}
       PPROF_ENABLED: ${PLUGIN_PPROF_ENABLED:-false}
       DIFY_INNER_API_URL: ${PLUGIN_DIFY_INNER_API_URL:-http://api:5001}
-      DIFY_INNER_API_KEY: ${PLUGIN_DIFY_INNER_API_KEY:-QaHbTe77CtuXmsfyhR7+vRjI/+XbV1AaFy691iy+kGDv2Jvy0/eAh8Y1}
+      DIFY_INNER_API_KEY: '${NEXPLUZ_PLUGIN_INNER_API_KEY}'
       PLUGIN_REMOTE_INSTALLING_HOST: ${PLUGIN_DEBUGGING_HOST:-0.0.0.0}
       PLUGIN_REMOTE_INSTALLING_PORT: ${PLUGIN_DEBUGGING_PORT:-5003}
       PLUGIN_WORKING_PATH: ${PLUGIN_WORKING_PATH:-/app/storage/cwd}
@@ -744,11 +749,12 @@ services:
         required: false
       - ./.env
     environment:
-      DIFY_AGENT_REDIS_URL: ${DIFY_AGENT_REDIS_URL:-redis://:${REDIS_PASSWORD:-difyai123456}@redis:6379/2}
+      DIFY_AGENT_REDIS_URL: 'redis://default:${DIFY_REDIS_PASSWORD}@${DIFY_REDIS_HOST}:6379/2'
+      
       DIFY_AGENT_PLUGIN_DAEMON_URL: ${DIFY_AGENT_PLUGIN_DAEMON_URL:-${PLUGIN_DAEMON_URL:-http://plugin_daemon:5002}}
-      DIFY_AGENT_PLUGIN_DAEMON_API_KEY: ${DIFY_AGENT_PLUGIN_DAEMON_API_KEY:-${PLUGIN_DAEMON_KEY:-lYkiYYT6owG+71oLerGzA7GXCgOT++6ovaezWAjpCjf+Sjc3ZtU+qUEi}}
+      DIFY_AGENT_PLUGIN_DAEMON_API_KEY: '${NEXPLUZ_PLUGIN_DAEMON_KEY}'
       DIFY_AGENT_INNER_API_URL: ${DIFY_AGENT_INNER_API_URL:-${PLUGIN_DIFY_INNER_API_URL:-http://api:5001}}
-      DIFY_AGENT_INNER_API_KEY: ${DIFY_AGENT_INNER_API_KEY:-${PLUGIN_DIFY_INNER_API_KEY:-QaHbTe77CtuXmsfyhR7+vRjI/+XbV1AaFy691iy+kGDv2Jvy0/eAh8Y1}}
+      DIFY_AGENT_INNER_API_KEY: '${NEXPLUZ_PLUGIN_INNER_API_KEY}'
       DIFY_AGENT_RUNTIME_BACKEND: ${DIFY_AGENT_RUNTIME_BACKEND:-local}
       DIFY_AGENT_LOCAL_SANDBOX_ENDPOINT: ${DIFY_AGENT_LOCAL_SANDBOX_ENDPOINT:-${DIFY_AGENT_SHELLCTL_ENTRYPOINT:-http://local_sandbox:5004}}
       DIFY_AGENT_LOCAL_SANDBOX_AUTH_TOKEN: ${DIFY_AGENT_LOCAL_SANDBOX_AUTH_TOKEN:-${DIFY_AGENT_SHELLCTL_AUTH_TOKEN:-}}
@@ -757,8 +763,8 @@ services:
       # This is security-sensitive: it derives the JWE encryption key for Agent Stub bearer tokens.
       # Replace this development default in production.
       # Generate one with: python -c 'import secrets; print(secrets.token_urlsafe(32))'
-      DIFY_AGENT_SERVER_SECRET_KEY: ${DIFY_AGENT_SERVER_SECRET_KEY:-MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY}
-      DIFY_AGENT_API_TOKEN: ${DIFY_AGENT_API_TOKEN:-dify-agent-run-token-for-dev-only}
+      DIFY_AGENT_SERVER_SECRET_KEY: '${NEXPLUZ_AGENT_SERVER_SECRET}'
+      DIFY_AGENT_API_TOKEN: '${NEXPLUZ_AGENT_API_TOKEN}'
     depends_on:
       plugin_daemon:
         condition: service_started
@@ -767,6 +773,7 @@ services:
       # Shared internal network with local_sandbox so agent_backend can reach it
       # on port 5004 (shellctl entrypoint) while local_sandbox stays off `default`.
       - agent_sandbox_network
+      - coolify
 
   # Dedicated SSRF proxy for the dify-agent local_sandbox.
   agent_ssrf_proxy:
@@ -1369,6 +1376,9 @@ services:
       - ./volumes/unstructured:/app/data
 
 networks:
+  coolify:
+    external: true
+    name: coolify
   # create a network between sandbox, api and ssrf_proxy, and can not access outside.
   ssrf_proxy_network:
     driver: bridge
