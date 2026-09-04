@@ -177,6 +177,9 @@ services:
       REDIS_PASSWORD: ${DIFY_REDIS_PASSWORD}
       REDIS_DB: '0'
       REDIS_USE_SSL: 'false'
+      CELERY_BROKER_URL: redis://default:${DIFY_REDIS_PASSWORD}@${DIFY_REDIS_HOST}:6379/1
+      CELERY_BACKEND: redis
+      BROKER_USE_SSL: 'false'
       VECTOR_STORE: pgvector
       SANDBOX_API_KEY: ${NEXPLUZ_SANDBOX_API_KEY}
       SENTRY_DSN: ${API_SENTRY_DSN:-}
@@ -241,6 +244,9 @@ services:
       REDIS_PASSWORD: ${DIFY_REDIS_PASSWORD}
       REDIS_DB: '0'
       REDIS_USE_SSL: 'false'
+      CELERY_BROKER_URL: redis://default:${DIFY_REDIS_PASSWORD}@${DIFY_REDIS_HOST}:6379/1
+      CELERY_BACKEND: redis
+      BROKER_USE_SSL: 'false'
       VECTOR_STORE: pgvector
       PGVECTOR_HOST: ${DIFY_DB_HOST}
       PGVECTOR_PORT: '5432'
