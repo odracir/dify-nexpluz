@@ -179,6 +179,7 @@ services:
       REDIS_DB: '0'
       REDIS_USE_SSL: 'false'
       CELERY_BROKER_URL: redis://default:${DIFY_REDIS_PASSWORD}@${DIFY_REDIS_HOST}:6379/1
+      PLUGIN_DAEMON_KEY: ${NEXPLUZ_PLUGIN_DAEMON_KEY}
       CELERY_BACKEND: redis
       BROKER_USE_SSL: 'false'
       VECTOR_STORE: pgvector
@@ -246,6 +247,7 @@ services:
       REDIS_DB: '0'
       REDIS_USE_SSL: 'false'
       CELERY_BROKER_URL: redis://default:${DIFY_REDIS_PASSWORD}@${DIFY_REDIS_HOST}:6379/1
+      PLUGIN_DAEMON_KEY: ${NEXPLUZ_PLUGIN_DAEMON_KEY}
       CELERY_BACKEND: redis
       BROKER_USE_SSL: 'false'
       VECTOR_STORE: pgvector
